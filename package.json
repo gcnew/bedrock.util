@@ -1,0 +1,6 @@
+{
+	"name": "bedrock.util",
+	"description": "bedrock.util is a collection of Javascript utility functions much like underscore.js",
+	"author": "gcnew",
+	"private" true
+}
