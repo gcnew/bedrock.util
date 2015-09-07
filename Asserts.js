@@ -5,12 +5,32 @@ var Asserts = new function() {
 
 	/**
 	overloads:
-		assert(condition, [format, ..params])
-		assert(condition, false, String)
-		assert(condition, Type, [format, ..params])
-		assert(condition, Type, false, [..params to type])
+		assert(aCondition, [String])
+		assert(aCondition, () -> String | ?.message)
 	*/
-	self.assert = function(aCondition, aErrorConstructor, aMessage) {
+	self.assert = function(aCondition, aError) {
+		if (!aCondition) {
+			if (!Types.isFunction(aError)) {
+				throw new AssertError(aError);
+			}
+
+			var err = aError();
+			if (err && err.message) {
+				throw err;
+			}
+
+			throw new AssertError(err);
+		}
+	};
+
+	/**
+	overloads:
+		assert2(condition, [format, ..params])
+		assert2(condition, false, String)
+		assert2(condition, Type, [format, ..params])
+		assert2(condition, Type, false, [..params to type])
+	*/
+	self.assert2 = function(aCondition, aErrorConstructor, aMessage) {
 		if (!aCondition) {
 			var offset = 1;
 			var ctor = self.AssertError;
@@ -25,26 +45,6 @@ var Asserts = new function() {
 				: Arrays.slice(arguments, offset + 1);
 
 			throw Functions.create.apply(null, [ ctor ].concat(args));
-		}
-	};
-
-	/**
-	overloads:
-		fassert(aCondition, [String])
-		fassert(aCondition, () -> String | ?.message)
-	*/
-	self.fassert = function(aCondition, aError) {
-		if (!aCondition) {
-			if (!Types.isFunction(aError)) {
-				throw new AssertError(aError);
-			}
-
-			var err = aError();
-			if (err && err.message) {
-				throw err;
-			}
-
-			throw new AssertError(err);
 		}
 	};
 
